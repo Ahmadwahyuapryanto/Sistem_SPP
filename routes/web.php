@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SiswaController; 
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\TagihanController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\BiayaSppController;
@@ -12,6 +12,7 @@ use App\Http\Controllers\WaliMuridController;
 use App\Http\Controllers\MidtransWebhookController;
 use App\Http\Controllers\Wali\PembayaranController as WaliPembayaranController;
 use App\Http\Controllers\Auth\Wali\LoginController as WaliLoginController;
+use App\Http\Controllers\StafController; // <-- TAMBAHKAN IMPORT INI
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // ROUTE UNTUK SISWA (CRUD)
-    Route::get('siswa/cetak', [SiswaController::class, 'cetakSiswa'])->name('siswa.cetak'); // <-- TAMBAHKAN ROUTE INI
+    Route::get('siswa/cetak', [SiswaController::class, 'cetakSiswa'])->name('siswa.cetak');
     Route::resource('siswa', SiswaController::class);
 
     // ROUTE UNTUK TAGIHAN
@@ -58,6 +59,14 @@ Route::middleware('auth')->group(function () {
     // ROUTE UNTUK MENGELOLA AKUN WALI
     Route::get('/wali-murid/{siswa}/create', [WaliMuridController::class, 'create'])->name('wali.create');
     Route::post('/wali-murid', [WaliMuridController::class, 'store'])->name('wali.store');
+
+    // ===================================================================
+    // == ROUTE UNTUK MANAJEMEN STAF (HANYA UNTUK ADMIN) ==
+    // ===================================================================
+    // Route untuk Manajemen Staf (Hanya untuk Admin)
+    Route::resource('staf', StafController::class)
+        ->middleware('role:admin')
+        ->except(['show']); // Kita tidak butuh halaman 'show'
 });
 
 // Ini memuat route default untuk login/register admin (auth.php)
@@ -88,7 +97,9 @@ Route::prefix('wali')->middleware('auth:wali')->name('wali.')->group(function() 
     })->name('dashboard');
     // ROUTE UNTUK PROSES PEMBAYARAN
     Route::post('/pembayaran/{tagihan}', [WaliPembayaranController::class, 'create'])->name('pembayaran.create');
-    // ROUTE UNTUK WEBHOOK MIDTRANS
-Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');
+    
     // Anda bisa menambahkan route lain untuk wali di sini jika diperlukan
 });
+
+// ROUTE UNTUK WEBHOOK MIDTRANS (diletakkan di luar middleware auth)
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');

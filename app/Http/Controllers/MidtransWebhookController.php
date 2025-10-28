@@ -44,6 +44,7 @@ class MidtransWebhookController extends Controller
                         'user_id' => null, // Pembayaran dilakukan oleh wali, bukan petugas
                         'tanggal_bayar' => now(),
                         'jumlah_bayar' => $tagihan->jumlah,
+                        'metode_pembayaran' => $type,
                     ]);
                 }
             }

@@ -43,6 +43,7 @@ class PembayaranController extends Controller
                 'user_id' => Auth::id(),
                 'tanggal_bayar' => now(),
                 'jumlah_bayar' => $request->jumlah_bayar,
+                'metode_pembayaran' => 'cash', 
             ]);
 
             $tagihan->update(['status' => 'LUNAS']);

@@ -28,6 +28,7 @@
                 <th>Nama Siswa</th>
                 <th>Periode Tagihan</th>
                 <th>Jumlah</th>
+                <th>Metode Pembayaran</th> {{-- KOLOM BARU --}}
                 <th>Petugas</th>
             </tr>
         </thead>
@@ -39,17 +40,18 @@
                     <td>{{ $pembayaran->tagihan->siswa->nama_lengkap }}</td>
                     <td>{{ \Carbon\Carbon::createFromDate($pembayaran->tagihan->tahun, $pembayaran->tagihan->bulan, 1)->translatedFormat('F Y') }}</td>
                     <td>Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</td>
-                    <td>{{ $pembayaran->user->name }}</td>
+                    <td>{{ $pembayaran->metode_pembayaran }}</td> {{-- DATA BARU --}}
+                    <td>{{ $pembayaran->user->name ?? 'Online' }}</td> {{-- PENYESUAIAN DISINI --}}
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" style="text-align: center;">Tidak ada data untuk periode yang dipilih.</td>
+                    <td colspan="7" style="text-align: center;">Tidak ada data untuk periode yang dipilih.</td> {{-- COLSPAN DISESUAIKAN --}}
                 </tr>
             @endforelse
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4" style="text-align: right;">Total Pendapatan</td>
+                <td colspan="5" style="text-align: right;">Total Pendapatan</td> {{-- COLSPAN DISESUAIKAN --}}
                 <td colspan="2">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</td>
             </tr>
         </tfoot>

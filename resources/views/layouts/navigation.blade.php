@@ -30,6 +30,16 @@
                         <x-nav-link :href="route('laporan.pembayaran')" :active="request()->routeIs('laporan.*')">
                             {{ __('Laporan') }}
                         </x-nav-link>
+
+                        {{-- =============================================== --}}
+                        {{-- == MENU MANAJEMEN STAF (HANYA UNTUK ADMIN) == --}}
+                        {{-- =============================================== --}}
+                        @if (Auth::user()->role == 'admin')
+                            <x-nav-link :href="route('staf.index')" :active="request()->routeIs('staf.*')">
+                                {{ __('Manajemen Staf') }}
+                            </x-nav-link>
+                        @endif
+                        
                     @endif
 
                     {{-- TAMPILKAN MENU INI HANYA UNTUK WALI MURID --}}
@@ -72,7 +82,7 @@
                         <form method="POST" action="{{ Auth::guard('wali')->check() ? route('wali.logout') : route('logout') }}">
                             @csrf
                             <x-dropdown-link :href="Auth::guard('wali')->check() ? route('wali.logout') : route('logout')"
-                                    onclick="event.preventDefault();
+                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -108,6 +118,16 @@
                 <x-responsive-nav-link :href="route('laporan.pembayaran')" :active="request()->routeIs('laporan.*')">
                     {{ __('Laporan') }}
                 </x-responsive-nav-link>
+
+                {{-- ======================================================= --}}
+                {{-- == MENU MANAJEMEN STAF (HANYA UNTUK ADMIN) - MOBILE == --}}
+                {{-- ======================================================= --}}
+                @if (Auth::user()->role == 'admin')
+                    <x-responsive-nav-link :href="route('staf.index')" :active="request()->routeIs('staf.*')">
+                        {{ __('Manajemen Staf') }}
+                    </x-responsive-nav-link>
+                @endif
+                
             @endif
 
             {{-- TAMPILKAN MENU INI HANYA UNTUK WALI MURID --}}
@@ -148,7 +168,6 @@
     var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
     var themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
-    // Change the icons inside the button based on previous settings
     if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         themeToggleLightIcon.classList.remove('hidden');
     } else {
@@ -158,12 +177,9 @@
     var themeToggleBtn = document.getElementById('theme-toggle');
 
     themeToggleBtn.addEventListener('click', function() {
-
-        // toggle icons inside button
         themeToggleDarkIcon.classList.toggle('hidden');
         themeToggleLightIcon.classList.toggle('hidden');
 
-        // if set via local storage previously
         if (localStorage.getItem('color-theme')) {
             if (localStorage.getItem('color-theme') === 'light') {
                 document.documentElement.classList.add('dark');
@@ -172,8 +188,6 @@
                 document.documentElement.classList.remove('dark');
                 localStorage.setItem('color-theme', 'light');
             }
-
-        // if NOT set via local storage previously
         } else {
             if (document.documentElement.classList.contains('dark')) {
                 document.documentElement.classList.remove('dark');

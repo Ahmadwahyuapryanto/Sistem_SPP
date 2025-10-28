@@ -16,8 +16,12 @@ class TagihanController extends Controller
      */
     public function show(Siswa $siswa)
     {
-        // Mengambil semua tagihan milik siswa yang dipilih, diurutkan dari yang terbaru
-        $tagihans = $siswa->tagihans()->orderBy('tahun', 'desc')->orderBy('bulan', 'desc')->get();
+        // Mengambil semua tagihan milik siswa, diurutkan, dan memuat data pembayaran terkait
+        $tagihans = $siswa->tagihans()
+            ->with('pembayaran') // <-- CUKUP TAMBAHKAN BARIS INI
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
 
         return view('tagihan.show', compact('siswa', 'tagihans'));
     }

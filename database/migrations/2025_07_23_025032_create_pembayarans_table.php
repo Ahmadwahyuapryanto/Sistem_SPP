@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->comment('Petugas yang memproses');
             $table->date('tanggal_bayar');
             $table->integer('jumlah_bayar');
+            $table->string('metode_pembayaran')->nullable();
             $table->timestamps();
         });
     }
