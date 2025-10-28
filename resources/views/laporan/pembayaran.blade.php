@@ -44,7 +44,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase">Nama Siswa</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase">Periode Tagihan</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium uppercase">Jumlah</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium uppercase">Petugas</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium uppercase">Metode Bayar</th> <th class="px-6 py-3 text-left text-xs font-medium uppercase">Petugas</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -54,19 +54,15 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $pembayaran->tagihan->siswa->nama_lengkap }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ \Carbon\Carbon::createFromDate($pembayaran->tagihan->tahun, $pembayaran->tagihan->bulan, 1)->translatedFormat('F Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $pembayaran->user->name }}</td>
-                                </tr>
+                                    <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $pembayaran->metode_pembayaran }}</td> <td class="px-6 py-4 whitespace-nowrap">{{ $pembayaran->user->name ?? 'Online' }}</td> </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center">Tidak ada data untuk periode yang dipilih.</td>
-                                </tr>
+                                    <td colspan="6" class="px-6 py-4 text-center">Tidak ada data untuk periode yang dipilih.</td> </tr>
                             @endforelse
                         </tbody>
                         <tfoot class="bg-gray-100 dark:bg-gray-900">
                             <tr>
-                                <td colspan="3" class="px-6 py-3 text-right font-bold uppercase">Total Pendapatan</td>
-                                <td colspan="2" class="px-6 py-3 font-bold">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</td>
-                            </tr>
+                                <td colspan="4" class="px-6 py-3 text-right font-bold uppercase">Total Pendapatan</td> <td colspan="2" class="px-6 py-3 font-bold">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</td> </tr>
                         </tfoot>
                     </table>
                 </div>

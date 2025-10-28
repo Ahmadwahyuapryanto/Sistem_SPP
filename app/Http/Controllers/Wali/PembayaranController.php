@@ -40,16 +40,40 @@ class PembayaranController extends Controller
             'quantity' => 1,
             'name' => 'Pembayaran SPP ' . $bulan . ' ' . $tagihan->tahun,
         ];
+        
+        // --- LOGIC BARU: Menentukan URL Pengembalian (Return URL) ---
+        // 1. Ambil URL halaman sebelumnya. Ini akan menjadi tujuan pengembalian user.
+        //    Gunakan 'url()->previous()' untuk mendapatkan URL dari mana user berasal.
+        $returnUrl = url()->previous();
+
+        // 2. Jika url()->previous() tidak ada (misalnya, jika user langsung mengakses URL ini), 
+        //    kita bisa fallback ke rute default (misalnya, dashboard wali). 
+        //    ANDA MUNGKIN PERLU MENGGANTI 'wali.dashboard' dengan rute yang sesuai di aplikasi Anda.
+        if (empty($returnUrl)) {
+            $returnUrl = route('wali.dashboard'); 
+        }
 
         $params = [
             'transaction_details' => $transaction_details,
             'customer_details' => $customer_details,
             'item_details' => $item_details,
+            
+            // 3. Tambahkan callbacks untuk Midtrans Redirect
+            'callbacks' => [
+                // finish: Dipakai jika pembayaran berhasil. User akan kembali ke halaman sebelumnya dengan status success.
+                'finish' => $returnUrl . '?transaction_status=success', 
+                // unfinish: Dipakai jika pembayaran dibatalkan atau tidak selesai.
+                'unfinish' => $returnUrl . '?transaction_status=pending',
+                // error: Dipakai jika terjadi error saat pembayaran.
+                'error' => $returnUrl . '?transaction_status=failed',
+            ],
         ];
+        // --- AKHIR LOGIC BARU ---
 
         try {
             $snapToken = Snap::getSnapToken($params);
-            // Kirim token ke view melalui session flash
+            
+            // Redirect kembali ke halaman sebelumnya (untuk memunculkan Midtrans Snap modal/pop-up)
             return redirect()->back()->with('snap_token', $snapToken);
         } catch (\Exception $e) {
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
